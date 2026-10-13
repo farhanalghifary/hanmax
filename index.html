@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HanMax Story</title>
+<meta name="theme-color" content="#0A0A0C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HanMax">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root { color-scheme: light dark; --color-bg: #ECECEE; --color-panel: #FFFFFF; --color-fg: #101114; --color-fg-muted: #5B5C66; --color-border-line: #D2D3DA; --color-ok: #12804A; --color-bad: #D32218;
+  --cds-radius: 6px; --cds-font-size-caption: 12px; --cds-font-size-body: 14px; --cds-font-size-heading: 16px; --cds-font-size-title: 22px; --cds-font-weight-medium: 600;
+  --cds-gap-sm: 8px; --cds-gap-md: 12px; --cds-pad-xs: 4px; --cds-pad-sm: 8px; --cds-pad-md: 12px; --cds-pad-lg: 16px;
+  --font-anthropic-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; --font-anthropic-serif: Georgia, serif; }
+@media (prefers-color-scheme: dark) { :root { --color-bg: #0A0A0C; --color-panel: #141519; --color-fg: #F3F3F5; --color-fg-muted: #8E8F99; --color-border-line: #2A2B32; } }
+html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); }
+.dash-skeleton { }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+</head>
+<body>
+<div id="dash-root">
+<style>
+#dash-root { --dash-gutter: 0; }
+.nx { --nx-gold: #A87B0B; --nx-gold-ink: #FFFFFF; --nx-gold-soft: #F3E7C2; --color-bg: #FBF8F1; --color-panel: #FFFFFF; --color-fg: #1F1A0E; --color-fg-muted: #6E6552; --color-border-line: #E7DDC4; --color-ok: #2B7A4B; --color-bad: #B93A2B; --nx-track: #EFE6CE;
+  max-width: 760px; margin-inline: auto; padding: 14px 14px 24px; min-height: 100vh; box-sizing: border-box; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); font-variant-numeric: tabular-nums; }
+.nx[data-nx-theme="dark"] { --nx-gold: #D9B44A; --nx-gold-ink: #1A1400; --nx-gold-soft: #3A2F10; --color-bg: #14110A; --color-panel: #1F1B11; --color-fg: #F4EEDC; --color-fg-muted: #A89F86; --color-border-line: #3A331F; --color-ok: #62C48B; --color-bad: #EE6C5D; --nx-track: #2C2616; }
+.nx-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.nx-theme { display: flex; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; flex: none; }
+.nx-theme button { min-height: 36px; padding: 0 10px; border: 0; background: transparent; color: var(--color-fg-muted); font: inherit; font-size: var(--cds-font-size-caption); cursor: pointer; }
+.nx-theme button[aria-pressed=true] { background: var(--nx-gold); color: var(--nx-gold-ink); }
+.nx h1::after { content: ''; display: block; width: 44px; height: 3px; background: var(--nx-gold); border-radius: 2px; margin-top: 6px; }
+.nx-kpi { border-left: 3px solid var(--nx-gold) !important; }
+.nx h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 4px; }
+.nx h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0 0 2px; }
+.nx .sub { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: 0 0 var(--cds-gap-sm); }
+.nx .take { font-size: var(--cds-font-size-body); margin: 0 0 var(--cds-gap-md); }
+.nx .take span { font-weight: var(--cds-font-weight-medium); }
+.nx-tabs { display: grid; grid-template-columns: repeat(3, 1fr); position: sticky; bottom: 0; z-index: 5; margin: var(--cds-gap-md) -14px -24px; padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0px)); background: var(--color-panel); border-top: 1px solid var(--color-border-line); box-shadow: 0 -6px 18px rgba(0,0,0,.10); }
+.nx-tabs button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 52px; border: 0; background: transparent; color: var(--color-fg-muted); font: inherit; font-size: var(--cds-font-size-caption); cursor: pointer; border-radius: var(--cds-radius); }
+.nx-tabs button[aria-selected=true] { color: var(--nx-gold); font-weight: var(--cds-font-weight-medium); }
+.nx-tabs button[aria-selected=true] svg { stroke-width: 2.3; }
+.nx-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); margin-bottom: var(--cds-gap-md); }
+.nx-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: var(--cds-gap-sm); margin-bottom: var(--cds-gap-md); }
+.nx-kpi { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); min-height: 84px; }
+.nx-kpi .l { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.nx-kpi .v { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-title); line-height: 1.2; margin-top: 4px; }
+.nx-kpi .n { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.nx-tip-box { position: relative; }
+.nx-tip { position: absolute; pointer-events: none; display: none; background: var(--color-panel); color: var(--color-fg); border: 1px solid var(--nx-gold); border-radius: var(--cds-radius); box-shadow: 0 4px 14px rgba(0,0,0,.25); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); z-index: 3; max-width: 220px; }
+.nx svg text { font-family: var(--font-anthropic-sans); fill: var(--color-fg-muted); font-size: 11px; }
+.nx-bars .r { display: grid; grid-template-columns: 84px 1fr auto; gap: 8px; align-items: center; margin: 7px 0; font-size: var(--cds-font-size-caption); }
+.nx-bars .bar { height: 14px; background: var(--nx-track); border-radius: 4px; position: relative; }
+.nx-bars .bar i { position: absolute; inset: 0 auto 0 0; background: var(--nx-gold); border-radius: 4px; }
+.nx table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); }
+.nx th { text-align: left; color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); padding: 6px 6px 6px 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.nx td { padding: 8px 6px 8px 0; border-bottom: 1px solid var(--color-border-line); vertical-align: top; }
+.nx td.num, .nx th.num { text-align: right; padding-right: 0; white-space: nowrap; }
+.nx tr.next td { font-weight: var(--cds-font-weight-medium); }
+.nx .aktif { color: var(--color-bad); }
+.nx .pulih { color: var(--color-ok); }
+.nx ul { margin: 0; padding-left: 18px; font-size: var(--cds-font-size-body); }
+.nx li { margin: 6px 0; }
+.nx-wrap { overflow-x: auto; }
+.nx-list-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.nx-list-head h2 { flex: 1; justify-content: center; margin: 0; text-align: center; }
+.nx-list-head button { width: 44px; min-height: 40px; border: 1px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); border-radius: 2px; font: inherit; font-size: var(--cds-font-size-body); font-weight: 800; cursor: pointer; }
+.nx-list-head button:disabled { opacity: .35; cursor: default; }
+.nx-cal-head { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+.nx-cal-head button, .nx-cal-head select, .nx-chip { min-height: 40px; border: 1px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); border-radius: var(--cds-radius); font: inherit; font-size: var(--cds-font-size-body); }
+.nx-cal-head button { width: 44px; cursor: pointer; }
+.nx-cal-head button:disabled { opacity: .35; cursor: default; }
+.nx-cal-head select { flex: 1; min-width: 0; padding: 0 10px; }
+.nx-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.nx-grid .wd { text-align: center; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); padding-bottom: 2px; }
+.nx-day { aspect-ratio: 1; min-height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 1px solid transparent; border-radius: var(--cds-radius); background: transparent; color: var(--color-fg-muted); font: inherit; font-size: var(--cds-font-size-caption); padding: 0; }
+.nx-day.has { border-color: var(--color-border-line); background: var(--color-panel); color: var(--color-fg); cursor: pointer; font-weight: var(--cds-font-weight-medium); }
+.nx-day.sel { background: var(--nx-gold); color: var(--nx-gold-ink); border-color: var(--nx-gold); }
+.nx-day i, .nx .lg i, .nx-ev .tag i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; }
+.nx-dots { display: flex; gap: 3px; }
+.nx-dot-riwayat { background: var(--color-ok); }
+.nx-dot-jadwal { background: var(--color-bad); }
+.nx .lg { margin-right: 10px; white-space: nowrap; }
+.nx-ev .tag { display: flex; align-items: center; gap: 6px; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin-bottom: 2px; }
+.nx-evs { margin-top: 0; }
+.nx-evs { margin-top: var(--cds-gap-md); }
+.nx-ev { border-top: 1px solid var(--color-border-line); padding: 10px 0; font-size: var(--cds-font-size-body); }
+.nx-ev .t { font-weight: var(--cds-font-weight-medium); }
+.nx-ev .m, .nx-ev .x { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin-top: 2px; }
+.nx-ev ul { font-size: var(--cds-font-size-caption); margin-top: 4px; }
+.nx-chip { padding: 0 12px; cursor: pointer; margin-bottom: 8px; min-height: 36px; font-size: var(--cds-font-size-caption); }
+.nx-bars .r.pick { cursor: pointer; }
+.nx-bars .r.on { font-weight: var(--cds-font-weight-medium); }
+.nx-items { margin-top: var(--cds-gap-sm); }
+.nx-items .it { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--color-border-line); padding: 8px 0; font-size: var(--cds-font-size-caption); }
+.nx [hidden] { display: none !important; }
+@media (min-width: 640px) { .nx-kpis { grid-template-columns: repeat(4, 1fr); } }
+
+/* ===== racing theme ===== */
+.nx { --nx-gold: #C98F00; --nx-gold-ink: #101010; --color-bg: #ECECEE; --color-panel: #FFFFFF; --color-fg: #101114; --color-fg-muted: #5B5C66; --color-border-line: #D2D3DA; --color-ok: #12804A; --color-bad: #D32218; --nx-track: #DCDDE3;
+  --nx-font: "Arial Narrow", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--nx-font); background-image: repeating-linear-gradient(45deg, rgba(0,0,0,.035) 0 2px, transparent 2px 5px); }
+.nx[data-nx-theme="dark"] { --nx-gold: #FFC400; --nx-gold-ink: #101010; --color-bg: #0A0A0C; --color-panel: #141519; --color-fg: #F3F3F5; --color-fg-muted: #8E8F99; --color-border-line: #2A2B32; --color-ok: #2FD07A; --color-bad: #FF3B30; --nx-track: #25262C;
+  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 2px, transparent 2px 5px); }
+.nx h1, .nx h2, .nx-kpi .v, .nx-kpi .l, .nx-tabs span, .nx-ev .t, .nx-theme button, .nx .take b { font-style: italic; text-transform: uppercase; letter-spacing: .04em; }
+.nx h1 { font-family: var(--nx-font); font-weight: 900; font-size: 34px; line-height: 1; margin: 0; }
+.nx h1 em { font-style: italic; color: var(--nx-gold); }
+.nx h1::after { display: none; }
+.nx-flag { height: 10px; width: 132px; margin: 10px 0 8px; background: repeating-conic-gradient(var(--color-fg) 0 25%, transparent 0 50%) 0 0 / 10px 10px; transform: skewX(-24deg); transform-origin: left; opacity: .9; }
+.nx-head .sub { margin: 0; }
+.nx h2 { font-weight: 900; font-size: 15px; letter-spacing: .08em; display: flex; align-items: center; gap: 8px; }
+.nx h2::before { content: ''; width: 7px; height: 15px; background: var(--nx-gold); transform: skewX(-22deg); flex: none; }
+.nx .sub { text-transform: none; }
+.nx-theme { border-radius: 2px; transform: skewX(-12deg); }
+.nx-theme button { transform: skewX(12deg); font-weight: 800; letter-spacing: .06em; font-size: 11px; }
+.nx .take { background: var(--color-panel); border: 1px solid var(--color-border-line); border-left: 4px solid var(--nx-gold); padding: 10px 12px; font-size: 14px; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); }
+.nx .take span { color: var(--nx-gold); font-weight: 900; font-style: italic; }
+.nx-card, .nx-kpi { border-radius: 2px; border: 1px solid var(--color-border-line); border-left: 4px solid var(--nx-gold) !important; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
+.nx-kpis { grid-template-columns: 1fr 1fr; }
+.nx-kpis .nx-kpi:first-child { grid-column: 1 / -1; }
+.nx-kpi .l { font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+.nx-kpi .v { font-family: var(--nx-font); font-size: 30px; font-weight: 900; line-height: 1.1; margin-top: 4px; }
+.nx-kpi .n { text-transform: none; }
+.nx-hero { padding-top: 12px; }
+.nx-gauge { min-height: 230px; }
+.nx-tabs { border-top: 2px solid var(--nx-gold); box-shadow: 0 -8px 22px rgba(0,0,0,.35); }
+.nx-tabs button { position: relative; border-radius: 0; }
+.nx-tabs span { font-size: 11px; font-weight: 800; letter-spacing: .1em; }
+.nx-tabs button[aria-selected=true]::before { content: ''; position: absolute; top: -8px; left: 22%; right: 22%; height: 4px; background: var(--nx-gold); transform: skewX(-30deg); box-shadow: 0 0 10px var(--nx-gold); }
+.nx-bars .bar { height: 12px; background: transparent; transform: skewX(-20deg); border-radius: 0; }
+.nx-bars .bar::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, var(--nx-track) 0 8px, transparent 8px 10px); }
+.nx-bars .bar i { border-radius: 0; background: repeating-linear-gradient(90deg, var(--nx-gold) 0 8px, transparent 8px 10px); }
+.nx-chart svg rect { rx: 2px; }
+.nx-chart svg path { filter: drop-shadow(0 0 3px var(--nx-gold)); }
+.nx-gauge svg path { filter: none; }
+.nx-day { border-radius: 2px; }
+.nx-day.sel { box-shadow: 0 0 10px var(--nx-gold); }
+.nx-cal-head button, .nx-cal-head select, .nx-chip { border-radius: 2px; font-weight: 800; }
+.nx-ev .t { font-weight: 900; font-size: 15px; }
+.nx th { text-transform: uppercase; letter-spacing: .08em; font-size: 10px; }
+
+/* ===== kurangi aksen kuning: kuning hanya untuk data dan satu penanda aktif ===== */
+.nx-card, .nx-kpi { border: 1px solid var(--color-border-line) !important; }
+.nx h2::before { display: none; }
+.nx .take { border-left: 1px solid var(--color-border-line); }
+.nx .take span { color: var(--color-fg); }
+.nx-tabs { border-top: 1px solid var(--color-border-line); box-shadow: none; }
+.nx-tabs button[aria-selected=true]::before { box-shadow: none; }
+.nx-day.sel { box-shadow: none; }
+.nx-chart svg path { filter: none; }
+.nx-cal-head button:not(:disabled):hover { border-color: var(--nx-gold); }
+
+/* ===== glass + ambient light ===== */
+.nx { overflow: clip; --nx-orb1: rgba(201,143,0,.30); --nx-orb2: rgba(211,34,24,.16); --nx-orb3: rgba(70,110,230,.14); --nx-glass-edge: rgba(0,0,0,.08); --nx-glass-hi: rgba(255,255,255,.7); }
+.nx[data-nx-theme="dark"] { --nx-orb1: rgba(255,196,0,.28); --nx-orb2: rgba(255,59,48,.20); --nx-orb3: rgba(80,120,255,.20); --nx-glass-edge: rgba(255,255,255,.14); --nx-glass-hi: rgba(255,255,255,.18); }
+.nx-ambient { position: sticky; top: 0; height: 0; z-index: 0; pointer-events: none; }
+.nx-ambient i { position: absolute; border-radius: 50%; filter: blur(64px); will-change: transform; }
+.nx-ambient .o1 { width: 340px; height: 340px; top: -90px; left: -110px; background: var(--nx-orb1); }
+.nx-ambient .o2 { width: 300px; height: 300px; top: 32vh; right: -120px; background: var(--nx-orb2); }
+.nx-ambient .o3 { width: 280px; height: 280px; top: 62vh; left: 8%; background: var(--nx-orb3); }
+.nx > .nx-head, .nx > .take, .nx > section { position: relative; z-index: 1; }
+.nx-card, .nx-kpi, .nx .take { background: color-mix(in srgb, var(--color-panel) 72%, transparent); -webkit-backdrop-filter: blur(12px) saturate(1.3); backdrop-filter: blur(12px) saturate(1.3); }
+.nx-tabs { margin: var(--cds-gap-md) 0 0; bottom: 10px; padding: 6px; gap: 4px; border: 1px solid var(--nx-glass-edge); border-radius: 22px; background: color-mix(in srgb, var(--color-panel) 46%, transparent); -webkit-backdrop-filter: blur(22px) saturate(1.8); backdrop-filter: blur(22px) saturate(1.8); box-shadow: inset 0 1px 0 var(--nx-glass-hi), 0 10px 30px rgba(0,0,0,.28); }
+.nx-tabs button { border-radius: 16px; overflow: hidden; }
+.nx-tabs button[aria-selected=true] { background: color-mix(in srgb, var(--nx-gold) 20%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--nx-gold) 45%, transparent), 0 0 18px color-mix(in srgb, var(--nx-gold) 28%, transparent); }
+.nx-tabs button[aria-selected=true]::before { top: 0; left: -60%; right: auto; width: 45%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.28), transparent); transform: skewX(-20deg); box-shadow: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .nx-ambient .o1 { animation: nx-drift1 17s ease-in-out infinite alternate; }
+  .nx-ambient .o2 { animation: nx-drift2 23s ease-in-out infinite alternate; }
+  .nx-ambient .o3 { animation: nx-drift3 29s ease-in-out infinite alternate; }
+  @keyframes nx-drift1 { from { transform: translate(0,0) scale(1); } to { transform: translate(70px, 90px) scale(1.25); } }
+  @keyframes nx-drift2 { from { transform: translate(0,0) scale(1.1); } to { transform: translate(-90px, 60px) scale(.85); } }
+  @keyframes nx-drift3 { from { transform: translate(0,0) scale(.9); } to { transform: translate(80px, -70px) scale(1.2); } }
+  .nx-tabs button[aria-selected=true]::before { animation: nx-sheen 3.6s ease-in-out infinite; }
+  @keyframes nx-sheen { 0% { left: -60%; } 55%, 100% { left: 120%; } }
+  .nx-flag { animation: nx-flag 1.4s linear infinite; }
+  @keyframes nx-flag { to { background-position: 20px 0; } }
+  .nx-ping { transform-box: fill-box; transform-origin: center; animation: nx-ping 2.2s ease-out infinite; }
+  @keyframes nx-ping { 0% { transform: scale(1); opacity: .8; } 100% { transform: scale(2.8); opacity: 0; } }
+}
+
+.hx-fab { position: fixed; right: 16px; bottom: 96px; z-index: 20; width: 56px; height: 56px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--nx-gold) 60%, transparent); background: var(--nx-gold); color: #0b0b0c; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 30px; line-height: 1; cursor: pointer; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 10px 28px rgba(0,0,0,.35); }
+.hx-fab[hidden] { display: none !important; }
+.hx-modal { position: fixed; inset: 0; z-index: 60; display: flex; align-items: flex-end; justify-content: center; background: rgba(0,0,0,.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.hx-modal[hidden] { display: none !important; }
+.hx-sheet { width: 100%; max-width: 560px; max-height: 92vh; overflow: auto; background: var(--color-panel); color: var(--color-fg); border: 1px solid var(--color-border-line); border-radius: 20px 20px 0 0; padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)); box-sizing: border-box; }
+.hx-sheet h2 { margin: 0 0 12px; }
+.hx-f { display: block; margin: 0 0 12px; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--color-fg-muted); }
+.hx-in { display: block; width: 100%; box-sizing: border-box; min-height: 46px; margin-top: 4px; padding: 0 12px; background: var(--color-bg); color: var(--color-fg); border: 1px solid var(--color-border-line); border-radius: 8px; font: inherit; font-size: 16px; text-transform: none; letter-spacing: 0; font-weight: 400; }
+.hx-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hx-item { border: 1px solid var(--color-border-line); border-radius: 10px; padding: 10px; margin-bottom: 10px; background: color-mix(in srgb, var(--color-bg) 60%, transparent); }
+.hx-item .hx-in { margin-top: 0; margin-bottom: 8px; }
+.hx-item .r { display: grid; grid-template-columns: 1fr 120px 44px; gap: 8px; }
+.hx-item .r .hx-in { margin-bottom: 0; }
+.hx-btn { min-height: 46px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--color-border-line); background: transparent; color: var(--color-fg); font: inherit; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.hx-btn.pri { background: var(--nx-gold); color: var(--nx-gold-ink); border-color: var(--nx-gold); }
+.hx-btn[disabled] { opacity: .5; }
+.hx-x { width: 44px; padding: 0; font-size: 20px; }
+.hx-err { color: var(--color-bad); font-size: 14px; margin: 8px 0; min-height: 18px; }
+.hx-actions { display: flex; gap: 10px; }
+.hx-actions .pri { flex: 1; }
+.hx-chk { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: 14px; }
+.hx-toast { position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%); z-index: 70; background: var(--nx-gold); color: var(--nx-gold-ink); padding: 10px 16px; border-radius: 999px; font-weight: 800; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+</style>
+
+<div class="nx">
+  <div class="nx-ambient" aria-hidden="true"><i class="o1"></i><i class="o2"></i><i class="o3"></i></div>
+  <div class="nx-head">
+    <div><h1>Han<em>Max</em> Story</h1><div class="nx-flag"></div></div>
+    <div class="nx-theme" role="group" aria-label="Tema"><button data-theme="auto" aria-pressed="true">Auto</button><button data-theme="light" aria-pressed="false">Terang</button><button data-theme="dark" aria-pressed="false">Gelap</button></div>
+  </div>
+  <p class="sub"><span data-source="motor" data-field="nama" data-row="0">—</span></p>
+  <p class="take">Garansi tersisa <span data-source="ringkas" data-field="sisa_hari" data-row="0">—</span> hari. Servis berikutnya <span data-source="jadwal" data-field="date" data-row="0">—</span> di ±<span data-source="jadwal" data-field="km" data-row="0">—</span> km.</p>
+
+  <section id="tab-ringkas" data-page="ringkas">
+    <div class="nx-card nx-hero" id="chart-odo">
+      <h2>Odometer</h2>
+      <p class="sub">Menuju 100.000 km. Per 13 Okt 2026</p>
+      <div class="nx-gauge dash-skeleton" data-source="motor"></div>
+    </div>
+    <div class="nx-kpis">
+      <div class="nx-kpi"><div class="l">Total biaya tercatat</div><div class="v" data-source="ringkas" data-field="total" data-row="0">—</div><div class="n">Jun 2023 – Okt 2026</div></div>
+      <div class="nx-kpi"><div class="l">Sisa garansi</div><div class="v" data-source="ringkas" data-field="sisa_hari" data-row="0">—</div><div class="n">hari, dari 13 Okt</div></div>
+      <div class="nx-kpi"><div class="l">Kode error aktif</div><div class="v" data-source="ringkas" data-field="kode_aktif" data-row="0">—</div><div class="n">pulih semua setelah ganti stepping motor ISC</div></div>
+    </div>
+
+    <div class="nx-card" id="chart-tahun">
+      <h2>Biaya per tahun</h2>
+      <p class="sub">Total dibayar per tahun. Ketuk batang untuk lihat kategorinya</p>
+      <div class="nx-tip-box"><div class="nx-chart dash-skeleton" data-source="by_year" style="min-height:170px"></div><div class="nx-tip"></div></div>
+    </div>
+
+    <div class="nx-card" id="chart-kategori">
+      <h2 class="nx-cat-title">Biaya per kategori</h2>
+      <p class="sub nx-cat-sub">Semua tahun. Ketuk kategori untuk lihat itemnya</p>
+      <button class="nx-chip" hidden></button>
+      <div class="nx-bars dash-skeleton" data-source="by_cat by_year_cat" style="min-height:120px"></div>
+      <div class="nx-items" data-source="item"></div>
+    </div>
+
+    <div class="nx-card" id="chart-km">
+      <h2>Odometer saat servis</h2>
+      <p class="sub">Lingkaran kosong = km estimasi</p>
+      <div class="nx-tip-box"><div class="nx-chart dash-skeleton" data-source="servis" style="min-height:200px"></div><div class="nx-tip"></div></div>
+    </div>
+  </section>
+
+  <section id="tab-kalender" data-page="kalender" hidden>
+    <div class="nx-card nx-cal" id="cal-semua" data-source="servis jadwal motor">
+      <h2>Kalender servis</h2>
+      <p class="sub"><span class="lg"><i class="nx-dot-riwayat"></i> Riwayat</span> <span class="lg"><i class="nx-dot-jadwal"></i> Jadwal</span> · ketuk tanggal untuk menyaring daftar</p>
+      <div class="nx-cal-head"><button class="prev" aria-label="Bulan sebelumnya">‹</button><select aria-label="Pilih bulan"></select><button class="next" aria-label="Bulan berikutnya">›</button></div>
+      <div class="nx-grid"></div>
+    </div>
+    <div class="nx-card" id="list-semua" data-source="servis jadwal">
+      <div class="nx-list-head"><button class="lprev" aria-label="Bulan sebelumnya">‹</button><h2 class="nx-list-title">Daftar</h2><button class="lnext" aria-label="Bulan berikutnya">›</button></div>
+      <div class="nx-evs"></div>
+    </div>
+  </section>
+
+  <section id="tab-kondisi" data-page="kondisi" hidden>
+    <div class="nx-card">
+      <h2>Umur komponen</h2>
+      <p class="sub">Km sejak ganti terakhir, dihitung dari km sekarang (estimasi)</p>
+      <div class="nx-wrap">
+        <table class="nx-komp" data-source="umur" data-row-key="name">
+          <thead><tr><th data-field="name">Komponen</th><th data-field="last_date">Terakhir</th><th class="num" data-field="umur_km">Km lalu</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="nx-card">
+      <h2>Kode error ECU</h2>
+      <p class="sub">Scan Yamaha Diagnostic Tool 12 Okt 2026 menemukan 6 kode aktif. Setelah stepping motor ISC diganti di bengkel resmi, semua kode pulih</p>
+      <div class="nx-wrap">
+        <table class="nx-kode" data-source="kode" data-row-key="kode">
+          <thead><tr><th data-field="kode">Kode</th><th data-field="arti">Arti</th><th data-field="status">Status</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="nx-card">
+      <h2>Catatan data</h2>
+      <p class="sub">Yang perlu diingat saat membaca angka</p>
+      <ul class="nx-cat" data-source="catatan"></ul>
+    </div>
+  </section>
+  <button class="hx-fab" id="hx-fab" aria-label="Buka kunci untuk mencatat servis"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 1.5a5 5 0 0 0-5 5V9H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6.5a5 5 0 0 0-5-5zm-3 5a3 3 0 0 1 6 0V9H9V6.5zm3 7a1.8 1.8 0 0 1 1 3.3V18h-2v-1.2a1.8 1.8 0 0 1 1-3.3z"/></svg></button>
+  <div class="hx-modal" id="hx-pinmodal" hidden>
+    <div class="hx-sheet" role="dialog" aria-modal="true" aria-label="Masukkan PIN">
+      <h2>Masukkan PIN</h2>
+      <p style="margin:0 0 12px;font-size:14px;color:var(--color-fg-muted)">Hanya pemilik yang bisa mencatat servis.</p>
+      <input class="hx-in" id="hx-pin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN">
+      <div class="hx-err" id="hx-pinerr"></div>
+      <div class="hx-actions"><button class="hx-btn" id="hx-pincancel" type="button">Batal</button><button class="hx-btn pri" id="hx-pinok" type="button">Buka</button></div>
+    </div>
+  </div>
+  <div class="hx-modal" id="hx-modal" hidden>
+    <div class="hx-sheet" role="dialog" aria-modal="true" aria-label="Catat servis">
+      <h2>Catat servis</h2>
+      <label class="hx-f">Tanggal<input class="hx-in" id="hx-date" type="date"></label>
+      <label class="hx-f">Pekerjaan<input class="hx-in" id="hx-title" type="text" placeholder="Contoh: Ganti oli dan filter udara" autocomplete="off"></label>
+      <div class="hx-row2">
+        <label class="hx-f">Odometer (km)<input class="hx-in" id="hx-km" type="number" inputmode="numeric" min="0" placeholder="65900"></label>
+        <label class="hx-f">Catatan<input class="hx-in" id="hx-note" type="text" autocomplete="off"></label>
+      </div>
+      <label class="hx-chk"><input type="checkbox" id="hx-est"> Km perkiraan, bukan dibaca langsung</label>
+      <div class="hx-f" style="margin-bottom:6px">Item (part atau jasa)</div>
+      <div id="hx-items"></div>
+      <button class="hx-btn" id="hx-add" type="button">+ Item</button>
+      <label class="hx-f" style="margin-top:12px">Total biaya (otomatis dari item, atau ketik sendiri)<input class="hx-in" id="hx-paid" type="number" inputmode="numeric" min="0"></label>
+      <div class="hx-err" id="hx-err"></div>
+      <div class="hx-actions"><button class="hx-btn" id="hx-cancel" type="button">Batal</button><button class="hx-btn pri" id="hx-save" type="button">Simpan</button></div>
+    </div>
+  </div>
+  <datalist id="hx-cats"></datalist>
+  <nav class="nx-tabs" role="tablist" aria-label="Menu">
+    <button role="tab" data-tab="ringkas" aria-selected="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg><span>Dash</span></button>
+    <button role="tab" data-tab="kalender" aria-selected="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>Kalender</span></button>
+    <button role="tab" data-tab="kondisi" aria-selected="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.7 2.7-2.3-.7-.7-2.3z"/></svg><span>Garasi</span></button>
+  </nav>
+</div>
+
+
+
+<script>
+// Pengganti google.script.run: memanggil web app Apps Script lewat fetch.
+// Ganti API_URL dengan URL deployment (berakhiran /exec).
+const API_URL = 'https://script.google.com/macros/s/AKfycbziNsT6sv4Ee5gH8HXHRkZCn1Ix_2gRALJap5TSFPViTIAzhClAqQmeAm1wKNUHf3XIVw/exec';
+window.google = {script: {run: (() => {
+  const make = (ok, ko) => new Proxy({}, {get: (_, k) => {
+    if (k === 'withSuccessHandler') return (f) => make(f, ko);
+    if (k === 'withFailureHandler') return (f) => make(ok, f);
+    return (...args) => {
+      const req = k === 'getData'
+        ? fetch(API_URL + '?action=data', {redirect: 'follow'})
+        : fetch(API_URL, {method: 'POST', redirect: 'follow', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({action: k, args: args})});
+      req.then((r) => r.json())
+        .then((j) => { if (!j.ok) throw new Error(j.error || 'Gagal'); if (ok) ok(j.data); })
+        .catch((e) => { if (ko) ko(e); });
+    };
+  }});
+  return make(null, null);
+})()}};
+</script>
+<script>
+(() => {
+  let DATA = {}, loaded = false;
+  const calcs = {}, cache = {};
+  const subs = [];
+  const loading = () => ({status: 'loading', data: [], columns: [], refreshing: false, meta: []});
+  const get = (id) => {
+    if (!loaded) return loading();
+    if (DATA[id]) return {status: 'ok', data: DATA[id], columns: Object.keys(DATA[id][0] || {}), refreshing: false, meta: []};
+    if (calcs[id]) { if (!cache[id]) cache[id] = calcs[id].fn(...calcs[id].inputs.map((k) => get(k).data)); return {status: 'ok', data: cache[id], columns: Object.keys(cache[id][0] || {}), refreshing: false, meta: []}; }
+    return {status: 'missing', data: [], message: 'missing', refreshing: false, meta: []};
+  };
+  const run = () => subs.forEach((f) => f());
+  window.dash = {
+    data: get,
+    calc: (id, o) => { calcs[id] = o; },
+    loader: () => {},
+    onData: (f) => { subs.push(f); f(); },
+    colors: ['#FFC400', '#FF3B30', '#2FD07A', '#5B86FF', '#B0B0B8', '#C98F00', '#8E8F99', '#444'],
+    params: () => ({}), setParams: () => {}, resetParams: () => {},
+    setLink: (n) => { try { history.replaceState(null, '', '#' + n); } catch (e) {} },
+    refresh: () => {}
+  };
+  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(run, 120); });
+  const fail = (e) => { const d = document.createElement('p'); d.style.cssText = 'padding:16px;font:14px sans-serif'; d.textContent = 'Gagal memuat data: ' + (e && e.message ? e.message : e) + '. Cek koneksi atau URL API.'; document.body.prepend(d); };
+  const ok = (d) => { DATA = d; loaded = true; run(); };
+  window.hxReload = (cb) => google.script.run.withSuccessHandler((d) => { ok(d); if (cb) cb(); }).withFailureHandler(fail).getData();
+  if (typeof google !== 'undefined' && google.script && google.script.run) google.script.run.withSuccessHandler(ok).withFailureHandler(fail).getData();
+  else fail('google.script.run tidak tersedia');
+})();
+</script>
+<script>
+(() => {
+  const BL = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const fmtD = (s) => { if (!s) return '—'; const [y, m, d] = s.split('-'); return +d + ' ' + BL[m - 1] + ' ' + y; };
+  const fmtN = (n) => n == null ? '—' : Math.round(n).toLocaleString('id-ID');
+  const fmtRp = (n) => n == null ? '—' : 'Rp' + fmtN(n);
+  const fmtJt = (n) => (n / 1e6).toLocaleString('id-ID', {maximumFractionDigits: 2}) + ' jt';
+
+  dash.calc('ringkas', {
+    title: 'Ringkasan angka utama',
+    description: 'Total biaya, sisa hari garansi dan jumlah kode aktif.',
+    inputs: ['servis', 'motor', 'kode'],
+    fn: (servis, motor, kode) => [{
+      total: servis.reduce((a, r) => a + (r.paid || 0), 0),
+      sisa_hari: Math.round((Date.parse(motor[0].garansi_sampai) - Date.parse(motor[0].asof)) / 86400000),
+      kode_aktif: kode.filter((k) => k.status === 'aktif').length
+    }]
+  });
+  dash.calc('by_year', {
+    title: 'Biaya per tahun',
+    description: 'Jumlah biaya dibayar, dikelompokkan per tahun servis.',
+    inputs: ['servis'],
+    fn: (servis) => {
+      const o = {};
+      servis.forEach((r) => { o[r.year] = (o[r.year] || 0) + (r.paid || 0); });
+      return Object.keys(o).sort().map((y) => ({year: y, total: o[y]}));
+    }
+  });
+  dash.calc('by_cat', {
+    title: 'Biaya per kategori',
+    description: 'Jumlah rupiah item servis per kategori, terbesar dulu.',
+    inputs: ['item'],
+    fn: (item) => {
+      const o = {};
+      item.forEach((r) => { o[r.cat] = (o[r.cat] || 0) + r.amount; });
+      return Object.keys(o).map((c) => ({cat: c, total: o[c]})).sort((a, b) => b.total - a.total);
+    }
+  });
+  dash.calc('by_year_cat', {
+    title: 'Biaya per tahun dan kategori',
+    description: 'Jumlah rupiah item servis per tahun dan kategori.',
+    inputs: ['item'],
+    fn: (item) => {
+      const o = {};
+      item.forEach((r) => { const k = r.year + '|' + r.cat; o[k] = (o[k] || 0) + r.amount; });
+      return Object.keys(o).sort().map((k) => ({year: k.split('|')[0], cat: k.split('|')[1], total: o[k]}));
+    }
+  });
+  dash.calc('umur', {
+    title: 'Umur komponen',
+    description: 'Km sejak ganti terakhir = km sekarang dikurangi km saat ganti.',
+    inputs: ['motor', 'komponen'],
+    fn: (motor, komponen) => komponen.map((c) => ({
+      name: c.name, last_date: c.last_date, umur_km: c.last_km == null ? null : motor[0].km_now - c.last_km
+    }))
+  });
+
+  const root = document.querySelector('.nx');
+  const ok = (...ids) => ids.every((i) => dash.data(i).status === 'ok');
+  const rows = (id) => dash.data(id).data;
+  const fillText = (sel, text) => { root.querySelectorAll(sel).forEach((e) => { e.textContent = text; }); };
+  const bodyOf = (sel) => root.querySelector(sel + ' tbody');
+  const td = (tr, text, cls) => { const c = document.createElement('td'); c.textContent = text; if (cls) c.className = cls; tr.appendChild(c); return c; };
+
+  // theme: auto follows the host page, Terang / Gelap are chosen by hand
+  let mode = 'auto';
+  const hostDark = () => {
+    const host = document.getElementById('dash-root');
+    const probe = document.createElement('div');
+    probe.style.cssText = 'position:absolute;width:0;height:0;background:var(--color-bg)';
+    host.appendChild(probe);
+    const m = getComputedStyle(probe).backgroundColor.match(/[\d.]+/g) || [255, 255, 255];
+    probe.remove();
+    return (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) < 128;
+  };
+  const applyTheme = () => {
+    const dark = mode === 'auto' ? hostDark() : mode === 'dark';
+    root.dataset.nxTheme = dark ? 'dark' : 'light';
+    root.querySelectorAll('.nx-theme button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.theme === mode)));
+  };
+  root.querySelectorAll('.nx-theme button').forEach((b) => b.addEventListener('click', () => { mode = b.dataset.theme; applyTheme(); draw(); }));
+
+  // tabs
+  let tab = 'ringkas';
+  root.querySelectorAll('.nx-tabs button').forEach((b) => b.addEventListener('click', () => {
+    tab = b.dataset.tab;
+    root.querySelectorAll('.nx-tabs button').forEach((x) => x.setAttribute('aria-selected', String(x === b)));
+    root.querySelectorAll('section[data-page]').forEach((s) => { s.hidden = s.dataset.page !== tab; });
+    dash.setLink('tab-' + tab);
+    draw();
+  }));
+
+  const tip = (box, html, x, y) => {
+    const t = box.querySelector('.nx-tip');
+    if (!html) { t.style.display = 'none'; return; }
+    t.textContent = html; t.style.display = 'block';
+    const w = box.clientWidth;
+    t.style.left = Math.max(0, Math.min(w - t.offsetWidth, x - t.offsetWidth / 2)) + 'px';
+    t.style.top = Math.max(0, y - t.offsetHeight - 10) + 'px';
+  };
+
+  let selYear = null, selCat = null;
+  const drawGauge = () => {
+    const el = root.querySelector('.nx-gauge');
+    if (!ok('motor')) return;
+    el.classList.remove('dash-skeleton'); el.replaceChildren();
+    const W = el.clientWidth; if (!W) return;
+    const km = rows('motor')[0].km_now, GOAL = 100000;
+    const S = Math.min(W, 340), r = S * 0.42, cx = W / 2, cy = r + 14, H = Math.round(cy + r * 0.78 + 30);
+    const A0 = -3 * Math.PI / 4, A1 = 3 * Math.PI / 4;
+    const ang = (v) => A0 + Math.min(1, v / GOAL) * (A1 - A0);
+    const pt = (a, rad) => [Math.sin(a) * rad, -Math.cos(a) * rad];
+    const arc = (a, b, i, o) => d3.arc().innerRadius(i).outerRadius(o).startAngle(a).endAngle(b)();
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const g = svg.append('g').attr('transform', `translate(${cx},${cy})`);
+    g.append('path').attr('d', arc(A0, A1, r - 12, r)).attr('fill', 'var(--nx-track)');
+    g.append('path').attr('d', arc(ang(90000), A1, r - 12, r)).attr('fill', 'var(--color-bad)').attr('opacity', 0.6);
+    g.append('path').attr('d', arc(A0, ang(km), r - 12, r)).attr('fill', 'var(--nx-gold)');
+    for (let i = 0; i <= 20; i++) {
+      const v = i * 5000, a = ang(v), major = i % 5 === 0, p1 = pt(a, r - 18), p2 = pt(a, r - (major ? 30 : 24));
+      g.append('line').attr('x1', p1[0]).attr('y1', p1[1]).attr('x2', p2[0]).attr('y2', p2[1])
+        .attr('stroke', v <= km ? 'var(--nx-gold)' : 'var(--color-fg-muted)').attr('stroke-width', major ? 2.5 : 1.2);
+      if (major) { const t = pt(a, r - 44); g.append('text').attr('x', t[0]).attr('y', t[1] + 4).attr('text-anchor', 'middle').text(String(v / 1000)); }
+    }
+    const e = pt(ang(km), r - 6);
+    g.append('circle').attr('class', 'nx-ping').attr('cx', e[0]).attr('cy', e[1]).attr('r', 6).attr('fill', 'none').attr('stroke', 'var(--nx-gold)').attr('stroke-width', 2);
+    g.append('circle').attr('cx', e[0]).attr('cy', e[1]).attr('r', 6).attr('fill', 'var(--color-bg)').attr('stroke', 'var(--nx-gold)').attr('stroke-width', 3);
+    g.append('text').attr('y', 6).attr('text-anchor', 'middle').style('font-size', Math.round(S * 0.13) + 'px').style('font-weight', 900).style('font-style', 'italic').style('fill', 'var(--color-fg)').text(fmtN(km));
+    g.append('text').attr('y', 26).attr('text-anchor', 'middle').style('font-size', '12px').style('font-weight', 800).style('letter-spacing', '.2em').text('KM');
+    g.append('text').attr('y', r * 0.78 + 14).attr('text-anchor', 'middle').style('font-size', '10px').style('letter-spacing', '.12em').text('x1000 KM · ZONA MERAH 90–100');
+  };
+
+  const drawYear = () => {
+    const el = root.querySelector('#chart-tahun .nx-chart');
+    if (!ok('by_year')) return;
+    el.classList.remove('dash-skeleton'); el.replaceChildren();
+    const data = rows('by_year'); const W = el.clientWidth; if (!W) return;
+    const H = 170, m = {t: 22, r: 4, b: 22, l: 4};
+    const x = d3.scaleBand(data.map((d) => d.year), [m.l, W - m.r]).padding(0.35);
+    const y = d3.scaleLinear([0, d3.max(data, (d) => d.total)], [H - m.b, m.t]);
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const box = el.parentNode;
+    svg.selectAll('rect').data(data).join('rect')
+      .attr('x', (d) => x(d.year)).attr('width', Math.min(x.bandwidth(), 48)).attr('y', (d) => y(d.total))
+      .attr('height', (d) => y(0) - y(d.total)).attr('rx', 4).attr('fill', 'var(--nx-gold)').attr('opacity', (d) => !selYear || selYear === d.year ? 1 : 0.35).style('cursor', 'pointer')
+      .on('click', (e, d) => { selYear = selYear === d.year ? null : d.year; selCat = null; draw(); })
+      .on('mousemove touchstart', (e, d) => { const r = box.getBoundingClientRect(); const p = e.touches ? e.touches[0] : e; tip(box, d.year + ': ' + fmtRp(d.total), p.clientX - r.left, p.clientY - r.top); })
+      .on('mouseleave touchend', () => tip(box, null));
+    svg.selectAll('.v').data(data).join('text').attr('x', (d) => x(d.year) + Math.min(x.bandwidth(), 48) / 2).attr('y', (d) => y(d.total) - 6).attr('text-anchor', 'middle').text((d) => fmtJt(d.total));
+    svg.selectAll('.a').data(data).join('text').attr('x', (d) => x(d.year) + Math.min(x.bandwidth(), 48) / 2).attr('y', H - 6).attr('text-anchor', 'middle').text((d) => d.year);
+  };
+
+  const drawCat = () => {
+    const el = root.querySelector('.nx-bars');
+    const itemsEl = root.querySelector('.nx-items');
+    const chip = root.querySelector('#chart-kategori .nx-chip');
+    if (!ok('by_cat', 'by_year_cat', 'item')) return;
+    el.classList.remove('dash-skeleton'); el.replaceChildren(); itemsEl.replaceChildren();
+    const data = selYear ? rows('by_year_cat').filter((r) => r.year === selYear).sort((a, b) => b.total - a.total) : rows('by_cat');
+    root.querySelector('.nx-cat-title').textContent = selYear ? 'Biaya per kategori ' + selYear : 'Biaya per kategori';
+    root.querySelector('.nx-cat-sub').textContent = (selYear ? 'Tahun ' + selYear : 'Semua tahun') + '. Ketuk kategori untuk lihat itemnya';
+    chip.hidden = !selYear; chip.textContent = 'Semua tahun ×';
+    chip.onclick = () => { selYear = null; selCat = null; draw(); };
+    if (!data.length) { el.textContent = 'Tidak ada item bernilai tercatat di tahun ini.'; return; }
+    const mx = d3.max(data, (d) => d.total);
+    data.forEach((d) => {
+      const r = document.createElement('div'); r.className = 'r pick' + (selCat === d.cat ? ' on' : '');
+      const a = document.createElement('span'); a.textContent = d.cat;
+      const b = document.createElement('div'); b.className = 'bar';
+      const i = document.createElement('i'); i.style.width = (d.total / mx * 100) + '%'; b.appendChild(i);
+      const c = document.createElement('span'); c.textContent = fmtRp(d.total);
+      r.append(a, b, c);
+      r.addEventListener('click', () => { selCat = selCat === d.cat ? null : d.cat; draw(); });
+      el.appendChild(r);
+    });
+    if (selCat) {
+      const its = rows('item').filter((r) => r.cat === selCat && (!selYear || r.year === selYear)).sort((a, b) => a.date.localeCompare(b.date));
+      const h = document.createElement('p'); h.className = 'sub'; h.textContent = 'Item ' + selCat + (selYear ? ' ' + selYear : ''); itemsEl.appendChild(h);
+      its.forEach((r) => {
+        const d = document.createElement('div'); d.className = 'it';
+        const l = document.createElement('span'); l.textContent = fmtD(r.date) + ' · ' + r.name;
+        const v = document.createElement('span'); v.textContent = fmtRp(r.amount);
+        d.append(l, v); itemsEl.appendChild(d);
+      });
+    }
+  };
+
+  const drawKm = () => {
+    const el = root.querySelector('#chart-km .nx-chart');
+    if (!ok('servis')) return;
+    el.classList.remove('dash-skeleton'); el.replaceChildren();
+    const data = rows('servis').filter((r) => r.km != null).map((r) => ({...r, t: new Date(r.date)})).sort((a, b) => a.t - b.t);
+    const W = el.clientWidth; if (!W || !data.length) return;
+    const H = 200, m = {t: 12, r: 10, b: 24, l: 44};
+    const x = d3.scaleUtc([data[0].t, data[data.length - 1].t], [m.l, W - m.r]);
+    const y = d3.scaleLinear([d3.min(data, (d) => d.km) - 1000, d3.max(data, (d) => d.km) + 1000], [H - m.b, m.t]);
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const box = el.parentNode;
+    svg.append('g').selectAll('line').data(y.ticks(4)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y).attr('stroke', 'var(--color-border-line)');
+    svg.append('g').selectAll('text').data(y.ticks(4)).join('text').attr('x', m.l - 6).attr('y', (d) => y(d) + 4).attr('text-anchor', 'end').text((d) => fmtN(d));
+    svg.append('g').selectAll('text').data(x.ticks(W < 420 ? 3 : 5)).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle').text((d) => BL[d.getUTCMonth()] + ' ' + String(d.getUTCFullYear()).slice(2));
+    svg.append('path').datum(data).attr('fill', 'none').attr('stroke', 'var(--nx-gold)').attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round')
+      .attr('d', d3.line().x((d) => x(d.t)).y((d) => y(d.km)));
+    svg.selectAll('circle').data(data).join('circle').attr('cx', (d) => x(d.t)).attr('cy', (d) => y(d.km)).attr('r', 5)
+      .attr('fill', (d) => d.km_est ? 'var(--color-panel)' : 'var(--nx-gold)').attr('stroke', 'var(--nx-gold)').attr('stroke-width', 2)
+      .on('mousemove touchstart', (e, d) => { const r = box.getBoundingClientRect(); const p = e.touches ? e.touches[0] : e; tip(box, fmtD(d.date) + ' · ' + (d.km_est ? '~' : '') + fmtN(d.km) + ' km', p.clientX - r.left, p.clientY - r.top); })
+      .on('mouseleave touchend', () => tip(box, null));
+  };
+
+  const BLF = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const WD = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+  const mkEl = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const evServis = (r) => {
+    const e = mkEl('div', 'nx-ev');
+    const tg = mkEl('div', 'tag'); tg.append(mkEl('i', 'nx-dot-riwayat'), document.createTextNode('Riwayat')); e.appendChild(tg);
+    e.appendChild(mkEl('div', 't', r.title));
+    e.appendChild(mkEl('div', 'm', fmtD(r.date) + ' · ' + (r.km == null ? 'km tidak tercatat' : (r.km_est ? '~' : '') + fmtN(r.km) + ' km') + ' · ' + (r.paid == null ? 'biaya tidak tercatat' : fmtRp(r.paid) + (r.partial ? '*' : ''))));
+    if (r.bengkel && r.bengkel !== '-') e.appendChild(mkEl('div', 'x', r.bengkel));
+    if (r.items) e.appendChild(mkEl('div', 'x', r.items));
+    if (r.note) e.appendChild(mkEl('div', 'x', r.note));
+    return e;
+  };
+  const evJadwal = (r) => {
+    const e = mkEl('div', 'nx-ev');
+    const tg = mkEl('div', 'tag'); tg.append(mkEl('i', 'nx-dot-jadwal'), document.createTextNode('Jadwal')); e.appendChild(tg);
+    e.appendChild(mkEl('div', 't', fmtD(r.date) + ' · ±' + fmtN(r.km) + ' km'));
+    const ul = mkEl('ul'); r.tasks.split('; ').forEach((t) => ul.appendChild(mkEl('li', null, t))); e.appendChild(ul);
+    if (r.note) e.appendChild(mkEl('div', 'x', r.note));
+    return e;
+  };
+  const makeCal = () => {
+    const el = root.querySelector('#cal-semua'), box = root.querySelector('#list-semua');
+    const sel = el.querySelector('select'), grid = el.querySelector('.nx-grid'), list = box.querySelector('.nx-evs');
+    const prev = el.querySelector('.prev'), next = el.querySelector('.next');
+    const lprev = box.querySelector('.lprev'), lnext = box.querySelector('.lnext');
+    const st = {ym: null, day: null};
+    const all = () => rows('servis').map((r) => ({k: 'riwayat', r})).concat(rows('jadwal').map((r) => ({k: 'jadwal', r})));
+    const months = () => [...new Set(all().map((e) => e.r.date.slice(0, 7)))].sort();
+    const go = (ym) => { st.ym = ym; st.day = null; draw(); };
+    prev.addEventListener('click', () => { const m = months(), i = m.indexOf(st.ym); if (i > 0) go(m[i - 1]); });
+    next.addEventListener('click', () => { const m = months(), i = m.indexOf(st.ym); if (i < m.length - 1) go(m[i + 1]); });
+    sel.addEventListener('change', () => go(sel.value));
+    lprev.addEventListener('click', () => prev.click());
+    lnext.addEventListener('click', () => next.click());
+    const lbl = (ym) => BLF[+ym.slice(5) - 1] + ' ' + ym.slice(0, 4);
+    const draw = () => {
+      if (!ok('servis', 'jadwal', 'motor')) return;
+      const m = months(); if (!m.length) return;
+      if (!st.ym || !m.includes(st.ym)) { const a = rows('motor')[0].asof.slice(0, 7); st.ym = m.find((v) => v >= a) || m[m.length - 1]; }
+      sel.replaceChildren(...m.map((v) => new Option(lbl(v), v))); sel.value = st.ym;
+      prev.disabled = m.indexOf(st.ym) === 0; next.disabled = m.indexOf(st.ym) === m.length - 1;
+      lprev.disabled = prev.disabled; lnext.disabled = next.disabled;
+      const y = +st.ym.slice(0, 4), mo = +st.ym.slice(5);
+      const evs = all().filter((e) => e.r.date.startsWith(st.ym)).sort((a, b) => a.r.date.localeCompare(b.r.date) || (a.k === 'riwayat' ? -1 : 1));
+      const byDay = {}; evs.forEach((e) => { const d = +e.r.date.slice(8); (byDay[d] = byDay[d] || []).push(e); });
+      grid.replaceChildren(...WD.map((w) => mkEl('div', 'wd', w)));
+      const off = (new Date(Date.UTC(y, mo - 1, 1)).getUTCDay() + 6) % 7;
+      for (let i = 0; i < off; i++) grid.appendChild(mkEl('div', 'nx-day'));
+      const n = new Date(Date.UTC(y, mo, 0)).getUTCDate();
+      for (let d = 1; d <= n; d++) {
+        if (byDay[d]) {
+          const b = mkEl('button', 'nx-day has' + (st.day === d ? ' sel' : ''), String(d));
+          const dots = mkEl('span', 'nx-dots');
+          [...new Set(byDay[d].map((e) => e.k))].forEach((k) => dots.appendChild(mkEl('i', 'nx-dot-' + k)));
+          b.appendChild(dots);
+          b.addEventListener('click', () => { st.day = st.day === d ? null : d; draw(); });
+          grid.appendChild(b);
+        } else grid.appendChild(mkEl('div', 'nx-day', String(d)));
+      }
+      box.querySelector('.nx-list-title').textContent = st.day ? st.day + ' ' + lbl(st.ym) : lbl(st.ym);
+      list.replaceChildren();
+      const shown = st.day ? byDay[st.day] : evs;
+      if (!shown.length) list.appendChild(mkEl('p', 'sub', 'Tidak ada kegiatan.'));
+      shown.forEach((e) => list.appendChild(e.k === 'riwayat' ? evServis(e.r) : evJadwal(e.r)));
+    };
+    return draw;
+  };
+  const drawCal = makeCal();
+
+  const drawKond = () => {
+    if (ok('umur')) {
+      const tb = bodyOf('.nx-komp'); tb.replaceChildren();
+      rows('umur').forEach((r) => {
+        const tr = document.createElement('tr'); tr.dataset.key = r.name;
+        td(tr, r.name); td(tr, r.last_date ? fmtD(r.last_date) : 'Tidak ada catatan'); td(tr, fmtN(r.umur_km), 'num');
+        tb.appendChild(tr);
+      });
+    }
+    if (ok('kode')) {
+      const tb = bodyOf('.nx-kode'); tb.replaceChildren();
+      rows('kode').forEach((r) => {
+        const tr = document.createElement('tr'); tr.dataset.key = String(r.kode);
+        td(tr, String(r.kode)); td(tr, r.arti); td(tr, r.status, r.status);
+        tb.appendChild(tr);
+      });
+    }
+    if (ok('catatan')) {
+      const ul = root.querySelector('.nx-cat'); ul.replaceChildren();
+      rows('catatan').forEach((r) => {
+        const li = document.createElement('li'); li.textContent = r.teks;
+        li.dataset.source = 'catatan'; li.dataset.field = 'teks'; li.dataset.where = 'no=' + r.no;
+        ul.appendChild(li);
+      });
+    }
+  };
+
+  const setMarks = () => {
+    const rs = ok('ringkas') ? rows('ringkas')[0] : null;
+    const mo = ok('motor') ? rows('motor')[0] : null;
+    const ja = ok('jadwal') ? rows('jadwal')[0] : null;
+    root.querySelectorAll('[data-source][data-field][data-row]').forEach((e) => {
+      const s = e.dataset.source, f = e.dataset.field; let v, row;
+      if (s === 'ringkas') row = rs; else if (s === 'motor') row = mo; else if (s === 'jadwal') row = ja; else return;
+      if (!row) { e.textContent = '—'; return; }
+      v = row[f];
+      e.textContent = f === 'total' ? fmtRp(v) : f === 'date' ? fmtD(v) : (typeof v === 'number' ? fmtN(v) : v);
+    });
+  };
+
+  const draw = () => {
+    applyTheme();
+    setMarks();
+    if (tab === 'ringkas') { drawGauge(); drawYear(); drawCat(); drawKm(); }
+    if (tab === 'kalender') drawCal();
+    if (tab === 'kondisi') drawKond();
+  };
+  dash.onData(draw);
+  const named = document.getElementById(location.hash.slice(1));
+  if (named && named.id.startsWith('tab-')) root.querySelector(`[data-tab="${named.id.slice(4)}"]`)?.click();
+})();
+</script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const modal = $('hx-modal'), box = $('hx-items'), err = $('hx-err');
+  let manual = false, unlocked = false, pinValue = '';
+  const HX_LOCK = '<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 1.5a5 5 0 0 0-5 5V9H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6.5a5 5 0 0 0-5-5zm-3 5a3 3 0 0 1 6 0V9H9V6.5zm3 7a1.8 1.8 0 0 1 1 3.3V18h-2v-1.2a1.8 1.8 0 0 1 1-3.3z"/></svg>', HX_PLUS = '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+  const setFab = () => { $('hx-fab').innerHTML = unlocked ? HX_PLUS : HX_LOCK; $('hx-fab').setAttribute('aria-label', unlocked ? 'Catat servis baru' : 'Buka kunci untuk mencatat servis'); };
+  const pm = $('hx-pinmodal');
+  const openPin = () => { $('hx-pin').value = ''; $('hx-pinerr').textContent = ''; $('hx-pinok').disabled = false; pm.hidden = false; $('hx-fab').hidden = true; setTimeout(() => $('hx-pin').focus(), 60); };
+  const closePin = () => { pm.hidden = true; $('hx-fab').hidden = false; };
+  const tryPin = () => {
+    const v = $('hx-pin').value;
+    if (!v) { $('hx-pinerr').textContent = 'Isi PIN dulu.'; return; }
+    if (typeof google === 'undefined' || !google.script) { $('hx-pinerr').textContent = 'API belum siap.'; return; }
+    $('hx-pinok').disabled = true; $('hx-pinerr').textContent = '';
+    google.script.run
+      .withSuccessHandler(() => { unlocked = true; pinValue = v; setFab(); pm.hidden = true; open(); })
+      .withFailureHandler((e) => { $('hx-pinerr').textContent = (e && e.message) ? e.message : String(e); $('hx-pinok').disabled = false; })
+      .cekPin(v);
+  };
+  const today = () => { const d = new Date(), p = (n) => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); };
+  const cats = () => { const d = dash.data('item'); const set = new Set(['Ban','CVT','Mesin','Kelistrikan','Rem','Radiator','Oli','Suspensi','Lainnya']); if (d.status === 'ok') d.data.forEach((r) => set.add(r.cat)); return [...set].sort(); };
+  const inp = (cls, ph, type) => { const e = document.createElement('input'); e.className = 'hx-in ' + cls; e.placeholder = ph; e.type = type || 'text'; if (type === 'number') { e.inputMode = 'numeric'; e.min = '0'; } e.autocomplete = 'off'; return e; };
+  const sum = () => [...box.querySelectorAll('.hx-amt')].reduce((a, e) => a + (Number(e.value) || 0), 0);
+  const syncTotal = () => { if (!manual && box.children.length) $('hx-paid').value = sum() || ''; };
+  const addItem = () => {
+    const w = document.createElement('div'); w.className = 'hx-item';
+    const name = inp('hx-name', 'Nama item, contoh: Oli Shell 0,8 L');
+    const r = document.createElement('div'); r.className = 'r';
+    const cat = inp('hx-cat', 'Kategori'); cat.setAttribute('list', 'hx-cats');
+    const amt = inp('hx-amt', 'Harga', 'number'); amt.addEventListener('input', syncTotal);
+    const x = document.createElement('button'); x.type = 'button'; x.className = 'hx-btn hx-x'; x.textContent = '×'; x.setAttribute('aria-label', 'Hapus item');
+    x.addEventListener('click', () => { w.remove(); syncTotal(); });
+    r.append(cat, amt, x); w.append(name, r); box.appendChild(w);
+  };
+  const open = () => {
+    $('hx-cats').replaceChildren(...cats().map((c) => new Option(c)));
+    $('hx-date').value = today(); ['hx-title', 'hx-km', 'hx-note', 'hx-paid'].forEach((i) => { $(i).value = ''; });
+    $('hx-est').checked = false; manual = false; err.textContent = ''; box.replaceChildren(); addItem();
+    $('hx-save').disabled = false; $('hx-save').textContent = 'Simpan';
+    modal.hidden = false; $('hx-fab').hidden = true;
+  };
+  const close = () => { modal.hidden = true; $('hx-fab').hidden = false; };
+  const toast = (t) => { const e = document.createElement('div'); e.className = 'hx-toast'; e.textContent = t; document.body.appendChild(e); setTimeout(() => e.remove(), 2600); };
+  setFab();
+  $('hx-fab').addEventListener('click', () => (unlocked ? open() : openPin()));
+  $('hx-pinok').addEventListener('click', tryPin);
+  $('hx-pin').addEventListener('keydown', (e) => { if (e.key === 'Enter') tryPin(); });
+  $('hx-pincancel').addEventListener('click', closePin);
+  pm.addEventListener('click', (e) => { if (e.target === pm) closePin(); });
+  $('hx-cancel').addEventListener('click', close);
+  modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+  $('hx-add').addEventListener('click', addItem);
+  $('hx-paid').addEventListener('input', () => { manual = $('hx-paid').value !== '' && Number($('hx-paid').value) !== sum(); });
+  $('hx-save').addEventListener('click', () => {
+    err.textContent = '';
+    const items = [...box.querySelectorAll('.hx-item')].map((w) => ({name: w.querySelector('.hx-name').value, cat: w.querySelector('.hx-cat').value, amount: w.querySelector('.hx-amt').value}));
+    const payload = {date: $('hx-date').value, title: $('hx-title').value, km: $('hx-km').value, km_est: $('hx-est').checked, note: $('hx-note').value, paid: $('hx-paid').value, items: items};
+    if (!payload.date) { err.textContent = 'Tanggal wajib diisi.'; return; }
+    if (!payload.title.trim()) { err.textContent = 'Pekerjaan wajib diisi.'; return; }
+    if (typeof google === 'undefined' || !google.script) { err.textContent = 'API belum siap.'; return; }
+    $('hx-save').disabled = true; $('hx-save').textContent = 'Menyimpan...';
+    google.script.run
+      .withSuccessHandler((r) => { close(); toast('Tersimpan: ' + r.id); window.hxReload(); })
+      .withFailureHandler((e) => { const m = (e && e.message) ? e.message : String(e); err.textContent = m; $('hx-save').disabled = false; $('hx-save').textContent = 'Simpan'; if (/PIN/.test(m)) { unlocked = false; pinValue = ''; setFab(); } })
+      .catatServis(payload, pinValue);
+  });
+})();
+</script>
+</div>
+</body>
+</html>
