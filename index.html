@@ -231,6 +231,8 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
   @keyframes hx-bar { 0% { transform: translateX(-110%); } 100% { transform: translateX(350%); } }
 }
 .nx-gauge text.hx-num { font-variant-numeric: tabular-nums; }
+.nx-komp tr.grp td { padding: 14px 0 4px; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--nx-gold); border-bottom: 1px solid var(--color-border-line); }
+.nx-komp tr.grp:first-child td { padding-top: 4px; }
 </style>
 
 <div class="nx">
@@ -440,12 +442,23 @@ window.google = {script: {run: (() => {
       return Object.keys(o).sort().map((k) => ({year: k.split('|')[0], cat: k.split('|')[1], total: o[k]}));
     }
   });
+  const KAT_KOMP = ['Mesin', 'CVT', 'Rem', 'Kaki-kaki', 'Kelistrikan', 'Pendingin', 'Lainnya'];
+  const katKomp = (n) => {
+    const t = String(n).toLowerCase();
+    if (/cvt|roller|slider|belt|kopling/.test(t)) return 'CVT';
+    if (/rem|kampas/.test(t)) return 'Rem';
+    if (/ban|shock|suspensi|bearing/.test(t)) return 'Kaki-kaki';
+    if (/aki|stepping|isc|kabel|lampu|sensor|kelistrikan/.test(t)) return 'Kelistrikan';
+    if (/radiator|coolant|air rad/.test(t)) return 'Pendingin';
+    if (/oli|busi|throttle|mesin|piston|klep|filter|karbu|injektor/.test(t)) return 'Mesin';
+    return 'Lainnya';
+  };
   dash.calc('umur', {
     title: 'Umur komponen',
     description: 'Km sejak ganti terakhir = km sekarang dikurangi km saat ganti.',
     inputs: ['motor', 'komponen'],
     fn: (motor, komponen) => komponen.map((c) => ({
-      name: c.name, last_date: c.last_date, umur_km: c.last_km == null ? null : motor[0].km_now - c.last_km
+      name: c.name, kat: katKomp(c.name), last_date: c.last_date, umur_km: c.last_km == null ? null : motor[0].km_now - c.last_km
     }))
   });
 
@@ -553,10 +566,17 @@ window.google = {script: {run: (() => {
   const drawUmur = () => {
     if (!ok('umur')) return;
     const tb = bodyOf('.nx-komp'); tb.replaceChildren();
-    rows('umur').forEach((r) => {
-      const tr = document.createElement('tr'); tr.dataset.key = r.name;
-      td(tr, r.name); td(tr, r.last_date ? fmtD(r.last_date) : 'Tidak ada catatan'); td(tr, fmtN(r.umur_km), 'num');
-      tb.appendChild(tr);
+    const all = rows('umur');
+    KAT_KOMP.forEach((k) => {
+      const g = all.filter((r) => r.kat === k).sort((a, b) => (b.umur_km == null ? -1 : b.umur_km) - (a.umur_km == null ? -1 : a.umur_km));
+      if (!g.length) return;
+      const h = document.createElement('tr'); h.className = 'grp';
+      const c = document.createElement('td'); c.colSpan = 3; c.textContent = k + ' · ' + g.length; h.appendChild(c); tb.appendChild(h);
+      g.forEach((r) => {
+        const tr = document.createElement('tr'); tr.dataset.key = r.name;
+        td(tr, r.name); td(tr, r.last_date ? fmtD(r.last_date) : 'Tidak ada catatan'); td(tr, fmtN(r.umur_km), 'num');
+        tb.appendChild(tr);
+      });
     });
   };
 
