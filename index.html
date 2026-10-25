@@ -56,7 +56,7 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
 .nx-tabs button[aria-selected=true] { color: var(--nx-gold); font-weight: var(--cds-font-weight-medium); }
 .nx-tabs button[aria-selected=true] svg { stroke-width: 2.3; }
 .nx-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); margin-bottom: var(--cds-gap-md); }
-.nx-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: var(--cds-gap-sm); margin-bottom: var(--cds-gap-md); }
+.nx-kpis { display: grid; grid-template-columns: 1fr; gap: var(--cds-gap-sm); margin-bottom: var(--cds-gap-md); }
 .nx-kpi { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); min-height: 84px; }
 .nx-kpi .l { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
 .nx-kpi .v { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-title); line-height: 1.2; margin-top: 4px; }
@@ -97,7 +97,6 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
 .nx-dot-jadwal { background: var(--color-bad); }
 .nx .lg { margin-right: 10px; white-space: nowrap; }
 .nx-ev .tag { display: flex; align-items: center; gap: 6px; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin-bottom: 2px; }
-.nx-evs { margin-top: 0; }
 .nx-evs { margin-top: var(--cds-gap-md); }
 .nx-ev { border-top: 1px solid var(--color-border-line); padding: 10px 0; font-size: var(--cds-font-size-body); }
 .nx-ev .t { font-weight: var(--cds-font-weight-medium); }
@@ -109,7 +108,6 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
 .nx-items { margin-top: var(--cds-gap-sm); }
 .nx-items .it { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--color-border-line); padding: 8px 0; font-size: var(--cds-font-size-caption); }
 .nx [hidden] { display: none !important; }
-@media (min-width: 640px) { .nx-kpis { grid-template-columns: repeat(4, 1fr); } }
 
 /* ===== racing theme ===== */
 .nx { --nx-gold: #C98F00; --nx-gold-ink: #101010; --color-bg: #ECECEE; --color-panel: #FFFFFF; --color-fg: #101114; --color-fg-muted: #5B5C66; --color-border-line: #D2D3DA; --color-ok: #12804A; --color-bad: #D32218; --nx-track: #DCDDE3;
@@ -131,7 +129,6 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
 .nx .take { background: var(--color-panel); border: 1px solid var(--color-border-line); border-left: 4px solid var(--nx-gold); padding: 10px 12px; font-size: 14px; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); }
 .nx .take span { color: var(--nx-gold); font-weight: 900; font-style: italic; }
 .nx-card, .nx-kpi { border-radius: 2px; border: 1px solid var(--color-border-line); border-left: 4px solid var(--nx-gold) !important; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
-.nx-kpis { grid-template-columns: 1fr 1fr; }
 .nx-kpis .nx-kpi:first-child { grid-column: 1 / -1; }
 .nx-kpi .l { font-size: 11px; font-weight: 800; letter-spacing: .12em; }
 .nx-kpi .v { font-family: var(--nx-font); font-size: 30px; font-weight: 900; line-height: 1.1; margin-top: 4px; }
@@ -243,7 +240,7 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
     <div class="nx-theme" role="group" aria-label="Tema"><button data-theme="auto" aria-pressed="true">Auto</button><button data-theme="light" aria-pressed="false">Terang</button><button data-theme="dark" aria-pressed="false">Gelap</button></div>
   </div>
   <p class="sub"><span data-source="motor" data-field="nama" data-row="0">—</span></p>
-  <p class="take">Garansi tersisa <span data-source="ringkas" data-field="sisa_hari" data-row="0">—</span> hari. Servis berikutnya <span data-source="jadwal" data-field="date" data-row="0">—</span> di ±<span data-source="jadwal" data-field="km" data-row="0">—</span> km.</p>
+  <p class="take">Servis berikutnya <span data-source="jadwal" data-field="date" data-row="0">—</span> di ±<span data-source="jadwal" data-field="km" data-row="0">—</span> km.</p>
 
   <section id="tab-ringkas" data-page="ringkas">
     <div class="nx-card nx-hero" id="chart-odo">
@@ -251,10 +248,22 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
       <p class="sub">Menuju 100.000 km. Per 13 Okt 2026</p>
       <div class="nx-gauge dash-skeleton" data-source="motor"></div>
     </div>
-    <div class="nx-kpis">
-      <div class="nx-kpi"><div class="l">Total biaya tercatat</div><div class="v" data-source="ringkas" data-field="total" data-row="0">—</div><div class="n">Jun 2023 – Okt 2026</div></div>
-      <div class="nx-kpi"><div class="l">Sisa garansi</div><div class="v" data-source="ringkas" data-field="sisa_hari" data-row="0">—</div><div class="n">hari, dari 13 Okt</div></div>
-      <div class="nx-kpi"><div class="l">Kode error aktif</div><div class="v" data-source="ringkas" data-field="kode_aktif" data-row="0">—</div><div class="n">pulih semua setelah ganti stepping motor ISC</div></div>
+
+    <div class="nx-card" id="card-umur">
+      <h2>Umur komponen</h2>
+      <p class="sub">Km sejak ganti terakhir, dihitung dari km sekarang (estimasi)</p>
+      <div class="nx-wrap">
+        <table class="nx-komp" data-source="umur" data-row-key="name">
+          <thead><tr><th data-field="name">Komponen</th><th data-field="last_date">Terakhir</th><th class="num" data-field="umur_km">Km lalu</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="nx-card" id="chart-km">
+      <h2>Odometer saat servis</h2>
+      <p class="sub">Lingkaran kosong = km estimasi</p>
+      <div class="nx-tip-box"><div class="nx-chart dash-skeleton" data-source="servis" style="min-height:200px"></div><div class="nx-tip"></div></div>
     </div>
 
     <div class="nx-card" id="chart-tahun">
@@ -271,10 +280,8 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
       <div class="nx-items" data-source="item"></div>
     </div>
 
-    <div class="nx-card" id="chart-km">
-      <h2>Odometer saat servis</h2>
-      <p class="sub">Lingkaran kosong = km estimasi</p>
-      <div class="nx-tip-box"><div class="nx-chart dash-skeleton" data-source="servis" style="min-height:200px"></div><div class="nx-tip"></div></div>
+    <div class="nx-kpis">
+      <div class="nx-kpi"><div class="l">Total biaya tercatat</div><div class="v" data-source="ringkas" data-field="total" data-row="0">—</div><div class="n">Jun 2023 – Okt 2026</div></div>
     </div>
   </section>
 
@@ -293,31 +300,12 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
 
   <section id="tab-kondisi" data-page="kondisi" hidden>
     <div class="nx-card">
-      <h2>Umur komponen</h2>
-      <p class="sub">Km sejak ganti terakhir, dihitung dari km sekarang (estimasi)</p>
-      <div class="nx-wrap">
-        <table class="nx-komp" data-source="umur" data-row-key="name">
-          <thead><tr><th data-field="name">Komponen</th><th data-field="last_date">Terakhir</th><th class="num" data-field="umur_km">Km lalu</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="nx-card">
-      <h2>Kode error ECU</h2>
-      <p class="sub">Scan Yamaha Diagnostic Tool 12 Okt 2026 menemukan 6 kode aktif. Setelah stepping motor ISC diganti di bengkel resmi, semua kode pulih</p>
-      <div class="nx-wrap">
-        <table class="nx-kode" data-source="kode" data-row-key="kode">
-          <thead><tr><th data-field="kode">Kode</th><th data-field="arti">Arti</th><th data-field="status">Status</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="nx-card">
       <h2>Catatan data</h2>
       <p class="sub">Yang perlu diingat saat membaca angka</p>
       <ul class="nx-cat" data-source="catatan"></ul>
     </div>
   </section>
+
   <button class="hx-fab" id="hx-fab" aria-label="Buka kunci untuk mencatat servis"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12 1.5a5 5 0 0 0-5 5V9H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6.5a5 5 0 0 0-5-5zm-3 5a3 3 0 0 1 6 0V9H9V6.5zm3 7a1.8 1.8 0 0 1 1 3.3V18h-2v-1.2a1.8 1.8 0 0 1 1-3.3z"/></svg></button>
   <div class="hx-modal" id="hx-pinmodal" hidden>
     <div class="hx-sheet" role="dialog" aria-modal="true" aria-label="Masukkan PIN">
@@ -350,15 +338,12 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
   <nav class="nx-tabs" role="tablist" aria-label="Menu">
     <button role="tab" data-tab="ringkas" aria-selected="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg><span>Dash</span></button>
     <button role="tab" data-tab="kalender" aria-selected="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>Kalender</span></button>
-    <button role="tab" data-tab="kondisi" aria-selected="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.7 2.7-2.3-.7-.7-2.3z"/></svg><span>Garasi</span></button>
+    <button role="tab" data-tab="kondisi" aria-selected="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.7 2.7-2.3-.7-.7-2.3z"/></svg><span>Catatan</span></button>
   </nav>
 </div>
 
-
-
 <script>
 // Pengganti google.script.run: memanggil web app Apps Script lewat fetch.
-// Ganti API_URL dengan URL deployment (berakhiran /exec).
 const API_URL = 'https://script.google.com/macros/s/AKfycbziNsT6sv4Ee5gH8HXHRkZCn1Ix_2gRALJap5TSFPViTIAzhClAqQmeAm1wKNUHf3XIVw/exec';
 window.google = {script: {run: (() => {
   const make = (ok, ko) => new Proxy({}, {get: (_, k) => {
@@ -404,7 +389,7 @@ window.google = {script: {run: (() => {
   const T0 = performance.now();
   const splashOff = () => { const e = document.getElementById('hx-splash'); if (!e) return; e.classList.add('done'); setTimeout(() => e.remove(), 600); };
   const ok = (d) => { const wait = Math.max(0, 1000 - (performance.now() - T0)); setTimeout(() => { DATA = d; loaded = true; run(); splashOff(); }, wait); };
-  window.hxReload = (cb) => google.script.run.withSuccessHandler((d) => { DATA = d; loaded = true; run(); if (cb) cb(); }).withFailureHandler(fail).getData();
+  window.hxReload = (cb) => google.script.run.withSuccessHandler((d) => { DATA = d; Object.keys(cache).forEach((k) => delete cache[k]); loaded = true; run(); if (cb) cb(); }).withFailureHandler(fail).getData();
   if (typeof google !== 'undefined' && google.script && google.script.run) google.script.run.withSuccessHandler(ok).withFailureHandler(fail).getData();
   else fail('google.script.run tidak tersedia');
 })();
@@ -419,12 +404,10 @@ window.google = {script: {run: (() => {
 
   dash.calc('ringkas', {
     title: 'Ringkasan angka utama',
-    description: 'Total biaya, sisa hari garansi dan jumlah kode aktif.',
-    inputs: ['servis', 'motor', 'kode'],
-    fn: (servis, motor, kode) => [{
-      total: servis.reduce((a, r) => a + (r.paid || 0), 0),
-      sisa_hari: Math.round((Date.parse(motor[0].garansi_sampai) - Date.parse(motor[0].asof)) / 86400000),
-      kode_aktif: kode.filter((k) => k.status === 'aktif').length
+    description: 'Total biaya tercatat.',
+    inputs: ['servis'],
+    fn: (servis) => [{
+      total: servis.reduce((a, r) => a + (r.paid || 0), 0)
     }]
   });
   dash.calc('by_year', {
@@ -469,7 +452,6 @@ window.google = {script: {run: (() => {
   const root = document.querySelector('.nx');
   const ok = (...ids) => ids.every((i) => dash.data(i).status === 'ok');
   const rows = (id) => dash.data(id).data;
-  const fillText = (sel, text) => { root.querySelectorAll(sel).forEach((e) => { e.textContent = text; }); };
   const bodyOf = (sel) => root.querySelector(sel + ' tbody');
   const td = (tr, text, cls) => { const c = document.createElement('td'); c.textContent = text; if (cls) c.className = cls; tr.appendChild(c); return c; };
 
@@ -550,7 +532,6 @@ window.google = {script: {run: (() => {
     gaugeFirst = false;
     if (still) setV(km);
     else {
-      // kalibrasi: jarum menyapu ke batas, turun ke nol, lalu mendarat di nilai asli
       ping.style('display', 'none');
       const seq = [[0, GOAL, 850, d3.easeCubicInOut], [GOAL, 0, 650, d3.easeCubicInOut], [0, km, 1100, d3.easeCubicOut]];
       const t0 = performance.now() + 250; let k = 0, ks = t0;
@@ -567,6 +548,16 @@ window.google = {script: {run: (() => {
     }
     g.append('text').attr('y', 26).attr('text-anchor', 'middle').style('font-size', '12px').style('font-weight', 800).style('letter-spacing', '.2em').text('KM');
     g.append('text').attr('y', r * 0.78 + 14).attr('text-anchor', 'middle').style('font-size', '10px').style('letter-spacing', '.12em').text('x1000 KM · ZONA MERAH 90–100');
+  };
+
+  const drawUmur = () => {
+    if (!ok('umur')) return;
+    const tb = bodyOf('.nx-komp'); tb.replaceChildren();
+    rows('umur').forEach((r) => {
+      const tr = document.createElement('tr'); tr.dataset.key = r.name;
+      td(tr, r.name); td(tr, r.last_date ? fmtD(r.last_date) : 'Tidak ada catatan'); td(tr, fmtN(r.umur_km), 'num');
+      tb.appendChild(tr);
+    });
   };
 
   const drawYear = () => {
@@ -700,7 +691,7 @@ window.google = {script: {run: (() => {
         if (byDay[d]) {
           const b = mkEl('button', 'nx-day has' + (st.day === d ? ' sel' : ''), String(d));
           const dots = mkEl('span', 'nx-dots');
-          [...new Set(byDay[d].map((e) => e.k))].forEach((k) => dots.appendChild(mkEl('i', 'nx-dot-' + k)));
+          ...new Set(byDay[d].map((e) => e.k))].forEach((k) => dots.appendChild(mkEl('i', 'nx-dot-' + k)));
           b.appendChild(dots);
           b.addEventListener('click', () => { st.day = st.day === d ? null : d; draw(); });
           grid.appendChild(b);
@@ -717,22 +708,6 @@ window.google = {script: {run: (() => {
   const drawCal = makeCal();
 
   const drawKond = () => {
-    if (ok('umur')) {
-      const tb = bodyOf('.nx-komp'); tb.replaceChildren();
-      rows('umur').forEach((r) => {
-        const tr = document.createElement('tr'); tr.dataset.key = r.name;
-        td(tr, r.name); td(tr, r.last_date ? fmtD(r.last_date) : 'Tidak ada catatan'); td(tr, fmtN(r.umur_km), 'num');
-        tb.appendChild(tr);
-      });
-    }
-    if (ok('kode')) {
-      const tb = bodyOf('.nx-kode'); tb.replaceChildren();
-      rows('kode').forEach((r) => {
-        const tr = document.createElement('tr'); tr.dataset.key = String(r.kode);
-        td(tr, String(r.kode)); td(tr, r.arti); td(tr, r.status, r.status);
-        tb.appendChild(tr);
-      });
-    }
     if (ok('catatan')) {
       const ul = root.querySelector('.nx-cat'); ul.replaceChildren();
       rows('catatan').forEach((r) => {
@@ -759,7 +734,7 @@ window.google = {script: {run: (() => {
   const draw = () => {
     applyTheme();
     setMarks();
-    if (tab === 'ringkas') { drawGauge(); drawYear(); drawCat(); drawKm(); }
+    if (tab === 'ringkas') { drawGauge(); drawUmur(); drawKm(); drawYear(); drawCat(); }
     if (tab === 'kalender') drawCal();
     if (tab === 'kondisi') drawKond();
   };
