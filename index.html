@@ -14,10 +14,11 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root { color-scheme: light dark; --color-bg: #ECECEE; --color-panel: #FFFFFF; --color-fg: #101114; --color-fg-muted: #5B5C66; --color-border-line: #D2D3DA; --color-ok: #12804A; --color-bad: #D32218;
-  --cds-radius: 6px; --cds-font-size-caption: 12px; --cds-font-size-body: 14px; --cds-font-size-heading: 16px; --cds-font-size-title: 22px; --cds-font-weight-medium: 600;
+  --cds-radius: 6px; --cds-font-size-caption: 13px; --cds-font-size-body: 15px; --cds-font-size-heading: 16px; --cds-font-size-title: 22px; --cds-font-weight-medium: 600;
   --cds-gap-sm: 8px; --cds-gap-md: 12px; --cds-pad-xs: 4px; --cds-pad-sm: 8px; --cds-pad-md: 12px; --cds-pad-lg: 16px;
   --font-anthropic-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; --font-anthropic-serif: Georgia, serif; }
 @media (prefers-color-scheme: dark) { :root { --color-bg: #0A0A0C; --color-panel: #141519; --color-fg: #F3F3F5; --color-fg-muted: #8E8F99; --color-border-line: #2A2B32; } }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); }
 .dash-skeleton { }
 </style>
@@ -233,6 +234,18 @@ html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); fon
 .nx-gauge text.hx-num { font-variant-numeric: tabular-nums; }
 .nx-komp tr.grp td { padding: 14px 0 4px; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--nx-gold); border-bottom: 1px solid var(--color-border-line); }
 .nx-komp tr.grp:first-child td { padding-top: 4px; }
+
+/* ukuran font: lebih terbaca di HP */
+.nx table { font-size: 14px; }
+.nx td { padding-top: 9px; padding-bottom: 9px; }
+.nx th { font-size: 11px; }
+.nx-komp tr.grp td { font-size: 11px; }
+.nx-kpi .l { font-size: 12px; }
+.nx-tabs span { font-size: 12px; }
+.nx-theme button { font-size: 12px; }
+.nx svg text { font-size: 12px; }
+.nx-ev .t { font-size: 16px; }
+.nx .sub { line-height: 1.4; }
 </style>
 
 <div class="nx">
@@ -559,8 +572,8 @@ window.google = {script: {run: (() => {
       };
       gaugeAnim = requestAnimationFrame(step);
     }
-    g.append('text').attr('y', 26).attr('text-anchor', 'middle').style('font-size', '12px').style('font-weight', 800).style('letter-spacing', '.2em').text('KM');
-    g.append('text').attr('y', r * 0.78 + 14).attr('text-anchor', 'middle').style('font-size', '10px').style('letter-spacing', '.12em').text('x1000 KM · ZONA MERAH 90–100');
+    g.append('text').attr('y', 26).attr('text-anchor', 'middle').style('font-size', '13px').style('font-weight', 800).style('letter-spacing', '.2em').text('KM');
+    g.append('text').attr('y', r * 0.78 + 14).attr('text-anchor', 'middle').style('font-size', '11px').style('letter-spacing', '.1em').text('x1000 KM · ZONA MERAH 90–100');
   };
 
   const drawUmur = () => {
