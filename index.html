@@ -691,7 +691,7 @@ window.google = {script: {run: (() => {
         if (byDay[d]) {
           const b = mkEl('button', 'nx-day has' + (st.day === d ? ' sel' : ''), String(d));
           const dots = mkEl('span', 'nx-dots');
-          ...new Set(byDay[d].map((e) => e.k))].forEach((k) => dots.appendChild(mkEl('i', 'nx-dot-' + k)));
+          [...new Set(byDay[d].map((e) => e.k))].forEach((k) => dots.appendChild(mkEl('i', 'nx-dot-' + k)));
           b.appendChild(dots);
           b.addEventListener('click', () => { st.day = st.day === d ? null : d; draw(); });
           grid.appendChild(b);
